@@ -1,0 +1,31 @@
+<resources>
+    <!--英文版APP-->
+    <!--
+    english version
+    <string name="app_name">Bluetooth_Data</string>
+    <string name="title_data">Data</string>
+    <string name="title_draw">Draw</string>
+    <string name="title_about">About</string>
+    <string name="content_about">draw and data</string>
+    <string name="receive_data">receive data</string>
+    -->
+
+    <!--中文版APP-->
+    <string name="app_name">蓝牙串口助手</string>
+    <string name="title_data">数据</string>
+    <string name="title_draw">画图</string>
+    <string name="title_about">关于</string>
+    <string name="content_about">
+        蓝牙串口助手——使用指南
+        \n\u3000\u3000数据页面可用于接收任意数据类型的数据并显示。
+        \n\u3000\u3000画图页面仅接收数字类型的数据，并将数据用折线图的形式展现出来。
+    </string>
+    <string name="receive_data">接收数据</string>
+    <string name="send_data">发送</string>
+    <string name="rec_reset">清空</string>
+    <string name="connect">连接</string>
+    <string name="disconnect">断开</string>
+    <string name="ble_not_supported">本机不支持蓝牙</string>
+    <string name="clear_rec_field">清空接收区</string>
+    <string name="clear_send_field">清空发送区</string>
+</resources>

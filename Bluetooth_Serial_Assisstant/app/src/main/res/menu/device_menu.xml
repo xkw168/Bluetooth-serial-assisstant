@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/connect"
+        android:id="@+id/connect_device"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom|withText" />
+    <item android:title="@string/disconnect"
+        android:id="@+id/disconnect_device"
+        android:orderInCategory="101"
+        app:showAsAction="ifRoom|withText"/>
+    <item android:title="@string/clear_rec_field"
+        android:id="@+id/clear_rec_field"
+        android:orderInCategory="102"
+        app:showAsAction="never"/>
+    <item android:title="@string/clear_send_field"
+        android:id="@+id/clear_send_field"
+        android:orderInCategory="103"
+        app:showAsAction="never"/>
+</menu>
