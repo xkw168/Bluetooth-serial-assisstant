@@ -1,8 +1,6 @@
 # Bluetooth_serial_assisstant
-## 开发环境
+## development environment
 1.Android Studio
-2.**真机**（注意蓝牙程序无法使用模拟器）
-3.蓝牙4.0以上的前端蓝牙模块（用于测试与手机通信）
-## 简介
-一个蓝牙串口助手软件，具备常规蓝牙串口助手一切功能并且增加了画图功能。
-注：基于蓝牙4.0及以上
+2.**real device**(Attention: VM doesn't have blutooth)
+a bluetooth assistant, has common function of other bluetooth assistants and has extra function like plot the data
+tip: base on bluetooth 4.0 and above
