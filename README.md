@@ -1,4 +1,4 @@
-# Bluetooth_serial_assisstant
+# Bluetooth_serial_assistant
 ## development environment
 1.Android Studio
 2.**real device**(Attention: VM doesn't have blutooth)
