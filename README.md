@@ -1,6 +1,8 @@
 # Bluetooth_serial_assistant
 ## development environment
-1.Android Studio
-2.**real device**(Attention: VM doesn't have blutooth)
-a bluetooth assistant, has common function of other bluetooth assistants and has extra function like plot the data
+1. Android Studio
+2. **real device**(Attention: VM doesn't have blutooth)
+
+A functional bluetooth assistant which has common function of other bluetooth assistants and extra function like plot.
+
 tip: base on bluetooth 4.0 and above
