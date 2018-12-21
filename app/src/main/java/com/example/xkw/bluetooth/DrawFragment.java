@@ -33,23 +33,29 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * @author xkw
+ * @date 2018.12.21
  */
 public class DrawFragment extends Fragment
     implements OnChartValueSelectedListener,OnChartGestureListener{
 
-    //UI
+    /**
+     * UI
+     */
     private LineChart mChart;
     private MainActivity mContext;
-    private TextView tv_data_send;
-    private EditText edit_send;
-    private Button btn_send;
+    private TextView tvDataSend;
+    private EditText sendData;
 
-    //variable
-    private String data_send = "  发送区域:\n";
+    /**
+     * variable
+     */
+    private String dataSend = "  发送区域:\n";
     private boolean mReceive = true;
 
-    //constant
+    /**
+     * constant value
+     */
     private static final String TAG = "DrawFragment";
 
     @Override
@@ -58,9 +64,9 @@ public class DrawFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_draw, container, false);
 
-        UI_Init(view);
+        initUI(view);
 
-        Draw_Init(view);
+        initDraw(view);
 
         return view;
     }
@@ -69,7 +75,7 @@ public class DrawFragment extends Fragment
     public void onResume() {
         super.onResume();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(MainActivity.Rec_Data);
+        intentFilter.addAction(MainActivity.REC_DATA);
         mContext.registerReceiver(mRecData,intentFilter);
     }
 
@@ -83,10 +89,10 @@ public class DrawFragment extends Fragment
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            if (MainActivity.Rec_Data.equals(action)){
+            if (MainActivity.REC_DATA.equals(action)){
                 if (mReceive){
                     try {
-                        float data_new = Float.parseFloat(mContext.GetData());
+                        float data_new = Float.parseFloat(mContext.getData());
                         addEntry(data_new);
                     }catch (Exception e){
                         //接收到的不是数字
@@ -98,24 +104,24 @@ public class DrawFragment extends Fragment
         }
     };
 
-    private void UI_Init(View view){
+    private void initUI(View view){
         mContext = (MainActivity)getActivity();
 
-        edit_send = (EditText)view.findViewById(R.id.et_send_draw);
+        sendData = (EditText)view.findViewById(R.id.et_send_draw);
 
-        tv_data_send = (TextView)view.findViewById(R.id.tv_data_send_draw);
-        tv_data_send.setMovementMethod(ScrollingMovementMethod.getInstance());
-        tv_data_send.setText(data_send);
+        tvDataSend = (TextView)view.findViewById(R.id.tv_data_send_draw);
+        tvDataSend.setMovementMethod(ScrollingMovementMethod.getInstance());
+        tvDataSend.setText(dataSend);
 
-        btn_send = (Button)view.findViewById(R.id.btn_send_draw);
-        btn_send.setOnClickListener(new View.OnClickListener() {
+        Button btSend = (Button) view.findViewById(R.id.btn_send_draw);
+        btSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mContext.GetConnectionState()){
-                    String str = edit_send.getText().toString();
-                    data_send += "  " + str + '\n';
-                    tv_data_send.setText(data_send);
-                    mContext.SendData(str);
+                if (mContext.getConnectionState()){
+                    String str = sendData.getText().toString();
+                    dataSend += "  " + str + '\n';
+                    tvDataSend.setText(dataSend);
+                    mContext.sendData(str);
                 }else {
                     Toast.makeText(mContext,"蓝牙未连接...",Toast.LENGTH_SHORT).show();
                 }
@@ -123,7 +129,7 @@ public class DrawFragment extends Fragment
         });
     }
 
-    private void Draw_Init(View view){
+    private void initDraw(View view){
         mChart = (LineChart)view.findViewById(R.id.chart1_draw);
         mChart.setOnChartGestureListener(this);
         mChart.setOnChartValueSelectedListener(this);
@@ -155,17 +161,17 @@ public class DrawFragment extends Fragment
     }
 
     public void addEntry(float yValue){
-        LineData line_data = mChart.getData();
+        LineData lineData = mChart.getData();
 
-        ILineDataSet set = line_data.getDataSetByIndex(0);
+        ILineDataSet set = lineData.getDataSetByIndex(0);
 
         if (set == null) {
             set = createSet();
-            line_data.addDataSet(set);
+            lineData.addDataSet(set);
         }
 
-        line_data.addEntry(new Entry(set.getEntryCount(),yValue), 0);
-        line_data.notifyDataChanged();
+        lineData.addEntry(new Entry(set.getEntryCount(),yValue), 0);
+        lineData.notifyDataChanged();
 
         // let the chart know it's data has changed
         mChart.notifyDataSetChanged();
@@ -186,16 +192,16 @@ public class DrawFragment extends Fragment
         return set;
     }
 
-    public void ClearRecField(){
+    public void clearRecField(){
         mChart.clearValues();
     }
 
-    public void ClearSendField(){
-        data_send = "  发送区域:\n";
-        tv_data_send.setText(data_send);
+    public void clearSendField(){
+        dataSend = "  发送区域:\n";
+        tvDataSend.setText(dataSend);
     }
 
-    public void SetRecState(boolean state){
+    public void setRecState(boolean state){
         mReceive = state;
     }
 

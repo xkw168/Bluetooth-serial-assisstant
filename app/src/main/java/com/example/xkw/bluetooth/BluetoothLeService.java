@@ -37,10 +37,10 @@ import java.util.UUID;
 /**
  * Service for managing connection and data communication with a GATT server hosted on a
  * given Bluetooth LE device.
+ * @author xkw
  */
 public class BluetoothLeService extends Service {
-    //private final static String TAG = BluetoothLeService.class.getSimpleName();
-    private static final String TAG = "BluetoothLeService";
+    private final static String TAG = BluetoothLeService.class.getSimpleName();
 
     private BluetoothManager mBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
@@ -72,20 +72,24 @@ public class BluetoothLeService extends Service {
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered, read and write data.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
-        @Override//当连接上设备或者失去连接时会回调该函数
+        //当连接上设备或者失去连接时会回调该函数
+        @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             String intentAction;
-            if (newState == BluetoothProfile.STATE_CONNECTED) {//连接成功
+            if (newState == BluetoothProfile.STATE_CONNECTED) {
+                // connect successful
                 if (status == BluetoothGatt.GATT_SUCCESS){
                     intentAction = ACTION_GATT_CONNECTED;
                     mConnectionState = STATE_CONNECTED;
                     broadcastUpdate(intentAction);
                     Log.i(TAG, "Connected to GATT server.");
                     // Attempts to discover services after successful connection.
-                    mBluetoothGatt.discoverServices();//连接成功后就去找出该设备中的服务
+                    //连接成功后就去找出该设备中的服务
+                    mBluetoothGatt.discoverServices();
                     Log.i(TAG, "Attempting to start service discovery:");
                 }
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {//连接失败
+            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                // connect fail
                 intentAction = ACTION_GATT_DISCONNECTED;
                 mConnectionState = STATE_DISCONNECTED;
                 Log.i(TAG, "Disconnected from GATT server.");
@@ -93,7 +97,8 @@ public class BluetoothLeService extends Service {
             }
         }
 
-        @Override//当设备是否找到服务时，会回调该函数
+        //当设备是否找到服务时，会回调该函数
+        @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
@@ -110,7 +115,8 @@ public class BluetoothLeService extends Service {
             }
         }
 
-        @Override//设备发出通知时会调用到该接口
+        //设备发出通知时会调用到该接口
+        @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
@@ -142,8 +148,9 @@ public class BluetoothLeService extends Service {
             final byte[] data = characteristic.getValue();
             if (data != null && data.length > 0) {
                 final StringBuilder stringBuilder = new StringBuilder(data.length);
-                for(byte byteChar : data)
+                for(byte byteChar : data){
                     stringBuilder.append(String.format("%02X ", byteChar));
+                }
                 intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
             }
         } else {
@@ -156,7 +163,7 @@ public class BluetoothLeService extends Service {
         sendBroadcast(intent);
     }
 
-    public class LocalBinder extends Binder {
+    class LocalBinder extends Binder {
         BluetoothLeService getService() {
             return BluetoothLeService.this;
         }
@@ -220,7 +227,7 @@ public class BluetoothLeService extends Service {
         }
 
         // Previously connected device.  Try to reconnect.
-        if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
+        if (address.equals(mBluetoothDeviceAddress)
                 && mBluetoothGatt != null) {
             Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
             if (mBluetoothGatt.connect()) {
@@ -238,7 +245,8 @@ public class BluetoothLeService extends Service {
         }
         // We want to directly connect to the device, so we are setting the autoConnect
         // parameter to false.
-        mBluetoothGatt = device.connectGatt(this, false, mGattCallback);//该函数才是真正的去进行连接
+        // 该函数才是真正的去进行连接
+        mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
         Log.d(TAG, "Trying to create a new connection.");
         mBluetoothDeviceAddress = address;
         mConnectionState = STATE_CONNECTING;
@@ -332,9 +340,10 @@ public class BluetoothLeService extends Service {
 
     public BluetoothGattService getSupportedGattServices(UUID uuid) {
         Log.e(TAG, "getSupportedGattServices: ");
-        if(uuid==null)
+        if(uuid==null) {
             return null;
-        else
+        } else {
             return mBluetoothGatt.getService(uuid);
+        }
     }
 }

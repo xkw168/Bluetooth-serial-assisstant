@@ -3,43 +3,45 @@ package com.example.xkw.bluetooth;
 import java.io.Serializable;
 
 /**
- * Created by xkw on 2017/12/27.
+ *
+ * @author xkw
+ * @date 2017/12/27
  */
 
 public class BLEDevice implements Serializable{
-    private String Device_name;
-    private String Device_address;
+    private String deviceName;
+    private String deviceAddress;
 
     public BLEDevice(){
 
     }
 
-    public BLEDevice(String Device_name, String Device_address){
-        this.Device_name = Device_name;
-        this.Device_address = Device_address;
+    BLEDevice(String deviceName, String deviceAddress){
+        this.deviceName = deviceName;
+        this.deviceAddress = deviceAddress;
     }
 
-    public String GetDeviceName(){
-        return Device_name;
+    String getDeviceName(){
+        return deviceName;
     }
 
-    public String GetDeviceAddress(){
-        return Device_address;
+    String getDeviceAddress(){
+        return deviceAddress;
     }
 
-    public void SetDeviceName(String name){
-        Device_name = name;
+    public void setDeviceName(String name){
+        deviceName = name;
     }
 
-    public void SetDeviceAddress(String address){
-        Device_address = address;
+    public void setDeviceAddress(String address){
+        deviceAddress = address;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof BLEDevice){
             BLEDevice temp = (BLEDevice)obj;
-            return this.Device_name.equals(temp.Device_name) && this.Device_address.equals(temp.Device_address);
+            return this.deviceName.equals(temp.deviceName) && this.deviceAddress.equals(temp.deviceAddress);
         }
         return super.equals(obj);
     }

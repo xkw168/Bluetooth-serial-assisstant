@@ -15,17 +15,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * @author xkw
+ */
 public class TextFragment extends Fragment {
 
-    //UI
+    /**
+     * UI
+     */
     private MainActivity mContext;
-    private TextView tv_data_rec,tv_data_send;
-    private EditText edit_send;
-    private Button btn_send;
+    private TextView tvDataRec, tvDataSend;
+    private EditText editSend;
 
-    //variable
-    private String data_rec = "  接收区域:\n";
-    private String data_send = "  发送区域:\n";
+    /**
+     * variable
+     */
+    private String dataRec = "  接收区域:\n";
+    private String dataSend = "  发送区域:\n";
     private boolean mReceive = true;
 
     @Override
@@ -36,25 +42,25 @@ public class TextFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_text, container, false);
         mContext = (MainActivity)getActivity();
 
-        edit_send = (EditText)view.findViewById(R.id.et_send_text);
+        editSend = (EditText)view.findViewById(R.id.et_send_text);
 
-        tv_data_rec = (TextView)view.findViewById(R.id.tv_data_rec_text);
-        tv_data_rec.setMovementMethod(ScrollingMovementMethod.getInstance());
-        tv_data_rec.setText(data_rec);
+        tvDataRec = (TextView)view.findViewById(R.id.tv_data_rec_text);
+        tvDataRec.setMovementMethod(ScrollingMovementMethod.getInstance());
+        tvDataRec.setText(dataRec);
 
-        tv_data_send = (TextView)view.findViewById(R.id.tv_data_send_text);
-        tv_data_send.setMovementMethod(ScrollingMovementMethod.getInstance());
-        tv_data_send.setText(data_send);
+        tvDataSend = (TextView)view.findViewById(R.id.tv_data_send_text);
+        tvDataSend.setMovementMethod(ScrollingMovementMethod.getInstance());
+        tvDataSend.setText(dataSend);
 
-        btn_send = (Button)view.findViewById(R.id.btn_send_text);
-        btn_send.setOnClickListener(new View.OnClickListener() {
+        Button btSend = (Button) view.findViewById(R.id.btn_send_text);
+        btSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mContext.GetConnectionState()){
-                    String str = edit_send.getText().toString();
-                    data_send += "  " + str + '\n';
-                    tv_data_send.setText(data_send);
-                    mContext.SendData(str);
+                if (mContext.getConnectionState()){
+                    String str = editSend.getText().toString();
+                    dataSend += "  " + str + '\n';
+                    tvDataSend.setText(dataSend);
+                    mContext.sendData(str);
                 }else {
                     Toast.makeText(mContext,"蓝牙未连接...",Toast.LENGTH_SHORT).show();
                 }
@@ -68,7 +74,7 @@ public class TextFragment extends Fragment {
     public void onResume() {
         super.onResume();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(MainActivity.Rec_Data);
+        intentFilter.addAction(MainActivity.REC_DATA);
         mContext.registerReceiver(mRecData,intentFilter);
     }
 
@@ -87,26 +93,26 @@ public class TextFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            if (MainActivity.Rec_Data.equals(action)){
+            if (MainActivity.REC_DATA.equals(action)){
                 if (mReceive){
-                    data_rec += "  " + mContext.GetData() + '\n';
-                    tv_data_rec.setText(data_rec);
+                    dataRec += "  " + mContext.getData() + '\n';
+                    tvDataRec.setText(dataRec);
                 }
             }
         }
     };
 
-    public void ClearRecField(){
-        data_rec = "  接收区域:\n";
-        tv_data_rec.setText(data_rec);
+    public void clearRecField(){
+        dataRec = "  接收区域:\n";
+        tvDataRec.setText(dataRec);
     }
 
-    public void ClearSendField(){
-        data_send = "  发送区域:\n";
-        tv_data_send.setText(data_send);
+    public void clearSendField(){
+        dataSend = "  发送区域:\n";
+        tvDataSend.setText(dataSend);
     }
 
-    public void SetRecState(boolean state){
+    public void setRecState(boolean state){
         mReceive = state;
     }
 }

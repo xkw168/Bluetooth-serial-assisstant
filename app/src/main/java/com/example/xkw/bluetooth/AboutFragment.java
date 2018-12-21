@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 /**
  * A simple {@link Fragment} subclass.
+ * @author xkw
  */
 public class AboutFragment extends Fragment {
 

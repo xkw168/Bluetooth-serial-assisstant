@@ -1,6 +1,7 @@
 package com.example.xkw.bluetooth;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -42,20 +43,23 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.UUID;
 
+/**
+ * @author xkw
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    //UI
-    private Toolbar mToolbar;
-    private Switch switch_data;
-
-    //fragment
+    /**
+     * fragment
+     */
     private TextFragment textFragment;
     private DrawFragment drawFragment;
     private AboutFragment aboutFragment;
 
-    //variable
+    /**
+     * variable
+     */
     private boolean mConnected = false;
     private boolean ifService = false;
     private int fragmentIndex = 0;
@@ -64,14 +68,19 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter mBluetoothAdapter;
     private Handler mHandler;
 
-    //constant
-    private final static int Request_Enable_BT = 1;
-    private final static int Add_Device = 2;
+    /**
+     * constant
+     */
+    private final static int REQUEST_ENABLE_BT = 1;
+    private final static int ADD_DEVICE = 2;
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 3;
-    private static final long Scan_Period = 10000;// Stops scanning after 10 seconds.
-    public final static String Rec_Data = "com.example.xkw.soil_sensor.REC_DATA";
+    // Stops scanning after 10 seconds.
+    private static final long SCAN_PERIOD = 10000;
+    public final static String REC_DATA = "com.example.xkw.soil_sensor.REC_DATA";
 
-    //service & characteristic
+    /**
+     * service & characteristic
+     */
     private BluetoothLeService mBluetoothLeService;
     private BluetoothGattService rd_wr_GattService;
     private BluetoothGattCharacteristic mNotifyCharacteristic;
@@ -83,23 +92,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mHandler = new Handler();
-        mBLEAdapter = new BLEAdapter();//新建一个适配器
+        mBLEAdapter = new BLEAdapter();
 
         //set fragment
-        SetDefaultFragment();
+        setDefaultFragment();
 
-        //set UI
-        mToolbar = (Toolbar)findViewById(R.id.toolbar_main);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(mToolbar);
-        switch_data = (Switch)findViewById(R.id.switch_data);
-        switch_data.setChecked(true);
-        switch_data.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        Switch switchData = (Switch) findViewById(R.id.switch_data);
+        switchData.setChecked(true);
+        switchData.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean choose) {
                 if(fragmentIndex == 0 && textFragment != null){
-                    textFragment.SetRecState(choose);
+                    textFragment.setRecState(choose);
                 }else if (fragmentIndex == 1 && drawFragment != null){
-                    drawFragment.SetRecState(choose);
+                    drawFragment.setRecState(choose);
                 }
             }
         });
@@ -153,8 +161,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.connect_device:
                 Log.w(TAG, "connect to device");
                 Toast.makeText(this,"连接设备",Toast.LENGTH_SHORT).show();
-                StartConnectBLE();
-                invalidateOptionsMenu();//使菜单无效，进而重新加载
+                startConnectBLE();
+                //使菜单无效，进而重新加载
+                invalidateOptionsMenu();
                 break;
             case R.id.disconnect_device:
                 Log.w(TAG, "disconnect the device");
@@ -167,19 +176,21 @@ public class MainActivity extends AppCompatActivity {
                 Log.w(TAG, "clear receive data");
                 Toast.makeText(this,"清空接收区",Toast.LENGTH_SHORT).show();
                 if (fragmentIndex == 0 && textFragment != null){
-                    textFragment.ClearRecField();
+                    textFragment.clearRecField();
                 }else if (fragmentIndex == 1 && drawFragment != null){
-                    drawFragment.ClearRecField();
+                    drawFragment.clearRecField();
                 }
                 break;
             case R.id.clear_send_field:
                 Log.w(TAG, "clear send data");
                 Toast.makeText(this,"清空发送区",Toast.LENGTH_SHORT).show();
                 if (fragmentIndex == 0 && textFragment != null){
-                    textFragment.ClearSendField();
+                    textFragment.clearSendField();
                 }else if (fragmentIndex == 1 && drawFragment != null){
-                    drawFragment.ClearSendField();
+                    drawFragment.clearSendField();
                 }
+                break;
+            default:
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -196,32 +207,34 @@ public class MainActivity extends AppCompatActivity {
                         textFragment = new TextFragment();
                     }
                     fragmentIndex = 0;
-                    ReplaceFragment(textFragment);
+                    replaceFragment(textFragment);
                     return true;
                 case R.id.navigation_draw:
                     if (drawFragment == null){
                         drawFragment = new DrawFragment();
                     }
                     fragmentIndex = 1;
-                    ReplaceFragment(drawFragment);
+                    replaceFragment(drawFragment);
                     return true;
                 case R.id.navigation_about:
                     if (aboutFragment == null){
                         aboutFragment = new AboutFragment();
                     }
                     fragmentIndex = 2;
-                    ReplaceFragment(aboutFragment);
+                    replaceFragment(aboutFragment);
                     return true;
+                default:
+                    break;
             }
             return false;
         }
     };
 
-    void ReplaceFragment(Fragment fragment){
+    void replaceFragment(Fragment fragment){
         if (fragment == null){
-            Log.w(TAG, "ReplaceFragment: fragment is not initialized");
+            Log.w(TAG, "replaceFragment: fragment is not initialized");
         }else {
-            Log.w(TAG, "ReplaceFragment: replace fragment successful");
+            Log.w(TAG, "replaceFragment: replace fragment successful");
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.frame_main,fragment);
@@ -229,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void SetDefaultFragment(){
+    void setDefaultFragment(){
         if (textFragment == null){
             textFragment = new TextFragment();
         }
@@ -239,24 +252,26 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    public void StartConnectBLE(){
+    public void startConnectBLE(){
         //bleDevices.clear();//清空蓝牙设备列表
-        mBLEAdapter.clearAll();//清空适配器
-        StartSearchBLE();//开始搜索蓝牙
+        //清空适配器
+        mBLEAdapter.clearAll();
+        //开始搜索蓝牙
+        startSearchBLE();
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
         mBuilder.setTitle("附近的蓝牙");
         mBuilder.setAdapter(mBLEAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 // TODO: 2018/1/14
-                connect(mBLEAdapter.getItem(i).GetDeviceAddress());
+                connect(mBLEAdapter.getItem(i).getDeviceAddress());
             }
         });
         mBuilder.create().show();
         //mBuilder.show();
     }
 
-    public void StartSearchBLE(){
+    public void startSearchBLE(){
         //判断本机是否支持蓝牙
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
@@ -266,7 +281,9 @@ public class MainActivity extends AppCompatActivity {
         // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
         // BluetoothAdapter through BluetoothManager.
         final BluetoothManager bluetoothManager = (BluetoothManager)getSystemService(BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
+        if (bluetoothManager != null){
+            mBluetoothAdapter = bluetoothManager.getAdapter();
+        }
         if (mBluetoothAdapter == null)
         {
             Toast.makeText(this, R.string.ble_not_supported,Toast.LENGTH_SHORT).show();
@@ -285,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
         //检查蓝牙是否开启,若未开启则提醒用户
         if (!mBluetoothAdapter.isEnabled()){
             Intent enableBTintent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBTintent,Request_Enable_BT);
+            startActivityForResult(enableBTintent, REQUEST_ENABLE_BT);
         }
         scanLeDevice(true);
     }
@@ -293,7 +310,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {//与startActivityForResult相呼应
         //用户未开启蓝牙则退出程序
-        if (requestCode == Request_Enable_BT && resultCode == Activity.RESULT_CANCELED){
+        if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED){
             finish();
             return;
         }
@@ -304,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
         private ArrayList<BLEDevice> mDevice;
         private LayoutInflater mInflator;
 
-        public BLEAdapter(){
+        BLEAdapter(){
             super();
             mDevice = new ArrayList<BLEDevice>();
             mInflator = MainActivity.this.getLayoutInflater();
@@ -315,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
             mInflator = MainActivity.this.getLayoutInflater();
         }
 
-        public void addDevice(BLEDevice device){
+        void addDevice(BLEDevice device){
             if (!mDevice.contains(device)){
                 mDevice.add(device);
             }
@@ -325,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
             mDevice.remove(index);
         }
 
-        public void clearAll(){
+        void clearAll(){
             mDevice.clear();
         }
 
@@ -344,30 +361,32 @@ public class MainActivity extends AppCompatActivity {
             return i;
         }
 
+        @SuppressLint("InflateParams")
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            ViewHolder viewHolder;
-            //常规ListView优化代码
+            BLEHolder BLEHolder;
             if (view == null){
                 //注意inflate（）的第三个参数必须设置为false，不然会和onCreate函数里面的setContentView冲突
                 view = mInflator.inflate(R.layout.listitem_device,null,false);
-                viewHolder = new ViewHolder();
-                viewHolder.Device_Name = (TextView)view.findViewById(R.id.device_name);
-                viewHolder.Device_Address = (TextView)view.findViewById(R.id.device_address);
-                view.setTag(viewHolder);//将ViewHolder储存至view内
+                BLEHolder = new BLEHolder();
+                BLEHolder.deviceName = (TextView)view.findViewById(R.id.device_name);
+                BLEHolder.deviceAddress = (TextView)view.findViewById(R.id.device_address);
+                //将ViewHolder储存至view内
+                view.setTag(BLEHolder);
             }
             else {
-                viewHolder = (ViewHolder)view.getTag();//从view内读取ViewHolder
+                //从view内读取ViewHolder
+                BLEHolder = (BLEHolder)view.getTag();
             }
             BLEDevice device = mDevice.get(i);
-            viewHolder.Device_Name.setText(device.GetDeviceName());
-            viewHolder.Device_Address.setText(device.GetDeviceAddress());
+            BLEHolder.deviceName.setText(device.getDeviceName());
+            BLEHolder.deviceAddress.setText(device.getDeviceAddress());
             return view;
         }
-        class ViewHolder{
+        class BLEHolder {
             //定义了一个内部类ViewHolder用于对每一个设备的信息进行缓存
-            TextView Device_Name;
-            TextView Device_Address;
+            TextView deviceName;
+            TextView deviceAddress;
         }
     }
 
@@ -403,7 +422,8 @@ public class MainActivity extends AppCompatActivity {
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
                 updateConnectionState();
-                invalidateOptionsMenu();//使菜单无效之后会重新加载，进而重新设置item的可见
+                //使菜单无效之后会重新加载，进而重新设置item的可见
+                invalidateOptionsMenu();
                 Log.d(TAG, "Connect State: " + mConnected);
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
@@ -411,24 +431,30 @@ public class MainActivity extends AppCompatActivity {
                 invalidateOptionsMenu();
                 Log.d(TAG, "Connect State: " + mConnected);
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
+                //获得数据读取服务
                 rd_wr_GattService = mBluetoothLeService.getSupportedGattServices(
-                        UUID.fromString(BluetoothData.DEVICE_SERVICE));//获得数据读取服务
-                if (rd_wr_GattService == null){//没有此项服务
+                        UUID.fromString(BluetoothData.DEVICE_SERVICE));
+                //没有此项服务
+                if (rd_wr_GattService == null){
                     Log.d(TAG, "rd_wr_GattService : null");
                 }else {
+                    //从该项服务中获取相应的characteristic
                     rd_wr_Characteristic = rd_wr_GattService.getCharacteristic(
-                            UUID.fromString(BluetoothData.DEVICE_CHARACTERISTIC_SERVICE));//从该项服务中获取相应的characteristic
-                    if (rd_wr_Characteristic == null){//没有此项characteristic
+                            UUID.fromString(BluetoothData.DEVICE_CHARACTERISTIC_SERVICE));
+                    //没有此项characteristic
+                    if (rd_wr_Characteristic == null){
                         Log.d(TAG, "rd_wr_Characteristic : null");
                     }else {
-                        final int charaProp = rd_wr_Characteristic.getProperties();//获取characteristic当前的属性
+                        //获取characteristic当前的属性
+                        final int charaProp = rd_wr_Characteristic.getProperties();
                         //BluetoothGattCharacteristic.PROPERTY_READ —— 数据处于可读取状态
                         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0){
                             if (mNotifyCharacteristic != null){
                                 mBluetoothLeService.setCharacteristicNotification(mNotifyCharacteristic,false);
                                 mNotifyCharacteristic = null;
                             }
-                            mBluetoothLeService.readCharacteristic(rd_wr_Characteristic);//读取数据
+                            //读取数据
+                            mBluetoothLeService.readCharacteristic(rd_wr_Characteristic);
                         }
                         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0){
                             mNotifyCharacteristic = rd_wr_Characteristic;
@@ -436,11 +462,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
-            }else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {//读取到数据或者数据发生改变
+            //读取到数据或者数据发生改变
+            }else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 Log.i(TAG, "Data received:" );
                 mData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
-                final Intent rec_data = new Intent(Rec_Data);
-                sendBroadcast(rec_data);//告诉fragment接收到了数据
+                final Intent rec_data = new Intent(REC_DATA);
+                //告诉fragment接收到了数据
+                sendBroadcast(rec_data);
             }
         }
     };
@@ -452,15 +480,16 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    String DeviceName = bluetoothDevice.getName();
-                    String DeviceAddress = bluetoothDevice.getAddress();
-                    if (DeviceName != null && DeviceName.length() > 0 && !DeviceName.contains("abeacon")){
-                        BLEDevice mBLEDevice = new BLEDevice(DeviceName,DeviceAddress);
+                    String deviceName = bluetoothDevice.getName();
+                    String deviceAddress = bluetoothDevice.getAddress();
+                    if (deviceName != null && deviceName.length() > 0 && !deviceName.contains("abeacon")){
+                        BLEDevice mBLEDevice = new BLEDevice(deviceName,deviceAddress);
                         mBLEAdapter.addDevice(mBLEDevice);
                         mBLEAdapter.notifyDataSetChanged();
                     }
                     else {
                         //nothing
+                        Log.e(TAG, "Device name:" + (deviceName != null ? deviceName : " "));
                     }
                 }
             });
@@ -484,9 +513,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void connect(String DeviceAddress){
+    public void connect(String deviceAddress){
         if (ifService && mBluetoothLeService != null){
-            mBluetoothLeService.connect(DeviceAddress);
+            mBluetoothLeService.connect(deviceAddress);
         }
     }
 
@@ -500,7 +529,7 @@ public class MainActivity extends AppCompatActivity {
                     mBluetoothAdapter.stopLeScan(mLeScanCallBack);
                     invalidateOptionsMenu();
                 }
-            },Scan_Period);
+            }, SCAN_PERIOD);
             mBluetoothAdapter.startLeScan(mLeScanCallBack);
         }
         else {
@@ -509,15 +538,16 @@ public class MainActivity extends AppCompatActivity {
         invalidateOptionsMenu();
     }
 
-    public boolean GetConnectionState(){
+    public boolean getConnectionState(){
         return mConnected;
     }
 
-    public String GetData(){
+    public String getData(){
         return mData;
     }
 
-    public void SendData(String str){//向单片机发送读取数据的指令
+    //向单片机发送读取数据的指令
+    public void sendData(String str){
         if (mConnected){
             if (rd_wr_Characteristic == null){
                 Toast.makeText(MainActivity.this,"未连接上蓝牙设备...",Toast.LENGTH_SHORT).show();
