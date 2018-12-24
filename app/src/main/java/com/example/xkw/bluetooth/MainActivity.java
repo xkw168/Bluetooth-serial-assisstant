@@ -253,7 +253,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startConnectBLE(){
-        //bleDevices.clear();//清空蓝牙设备列表
         //清空适配器
         mBLEAdapter.clearAll();
         //开始搜索蓝牙
@@ -263,12 +262,10 @@ public class MainActivity extends AppCompatActivity {
         mBuilder.setAdapter(mBLEAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                // TODO: 2018/1/14
                 connect(mBLEAdapter.getItem(i).getDeviceAddress());
             }
         });
         mBuilder.create().show();
-        //mBuilder.show();
     }
 
     public void startSearchBLE(){
@@ -364,23 +361,23 @@ public class MainActivity extends AppCompatActivity {
         @SuppressLint("InflateParams")
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            BLEHolder BLEHolder;
+            BLEHolder bleHolder;
             if (view == null){
                 //注意inflate（）的第三个参数必须设置为false，不然会和onCreate函数里面的setContentView冲突
                 view = mInflator.inflate(R.layout.listitem_device,null,false);
-                BLEHolder = new BLEHolder();
-                BLEHolder.deviceName = (TextView)view.findViewById(R.id.device_name);
-                BLEHolder.deviceAddress = (TextView)view.findViewById(R.id.device_address);
+                bleHolder = new BLEHolder();
+                bleHolder.deviceName = (TextView)view.findViewById(R.id.device_name);
+                bleHolder.deviceAddress = (TextView)view.findViewById(R.id.device_address);
                 //将ViewHolder储存至view内
-                view.setTag(BLEHolder);
+                view.setTag(bleHolder);
             }
             else {
                 //从view内读取ViewHolder
-                BLEHolder = (BLEHolder)view.getTag();
+                bleHolder = (BLEHolder)view.getTag();
             }
             BLEDevice device = mDevice.get(i);
-            BLEHolder.deviceName.setText(device.getDeviceName());
-            BLEHolder.deviceAddress.setText(device.getDeviceAddress());
+            bleHolder.deviceName.setText(device.getDeviceName());
+            bleHolder.deviceAddress.setText(device.getDeviceAddress());
             return view;
         }
         class BLEHolder {
@@ -409,12 +406,14 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    // Handles various events fired by the Service.
-    // ACTION_GATT_CONNECTED: connected to a GATT server.
-    // ACTION_GATT_DISCONNECTED: disconnected from a GATT server.
-    // ACTION_GATT_SERVICES_DISCOVERED: discovered GATT services.
-    // ACTION_DATA_AVAILABLE: received data from the device.  This can be a result of read
-    //                        or notification operations.
+    /**
+     * Handles various events fired by the Service.
+     *     ACTION_GATT_CONNECTED: connected to a GATT server.
+     *     ACTION_GATT_DISCONNECTED: disconnected from a GATT server.
+     *     ACTION_GATT_SERVICES_DISCOVERED: discovered GATT services.
+     *     ACTION_DATA_AVAILABLE: received data from the device.  This can be a result of read
+     *                            or notification operations.
+     */
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -436,14 +435,14 @@ public class MainActivity extends AppCompatActivity {
                         UUID.fromString(BluetoothData.DEVICE_SERVICE));
                 //没有此项服务
                 if (rd_wr_GattService == null){
-                    Log.d(TAG, "rd_wr_GattService : null");
+                    Log.d(TAG, "rd_wr_GattService: null");
                 }else {
                     //从该项服务中获取相应的characteristic
                     rd_wr_Characteristic = rd_wr_GattService.getCharacteristic(
                             UUID.fromString(BluetoothData.DEVICE_CHARACTERISTIC_SERVICE));
                     //没有此项characteristic
                     if (rd_wr_Characteristic == null){
-                        Log.d(TAG, "rd_wr_Characteristic : null");
+                        Log.d(TAG, "rd_wr_Characteristic: null");
                     }else {
                         //获取characteristic当前的属性
                         final int charaProp = rd_wr_Characteristic.getProperties();
@@ -550,7 +549,7 @@ public class MainActivity extends AppCompatActivity {
     public void sendData(String str){
         if (mConnected){
             if (rd_wr_Characteristic == null){
-                Toast.makeText(MainActivity.this,"未连接上蓝牙设备...",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"无读写服务",Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onClick: BLE not connect");
             }else {
                 rd_wr_Characteristic.setValue(str);

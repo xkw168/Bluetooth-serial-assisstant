@@ -28,4 +28,5 @@
     <string name="ble_not_supported">本机不支持蓝牙</string>
     <string name="clear_rec_field">清空接收区</string>
     <string name="clear_send_field">清空发送区</string>
+    <string name="input_hint">text</string>
 </resources>

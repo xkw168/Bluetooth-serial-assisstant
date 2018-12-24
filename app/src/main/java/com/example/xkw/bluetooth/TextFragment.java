@@ -52,7 +52,7 @@ public class TextFragment extends Fragment {
         tvDataSend.setMovementMethod(ScrollingMovementMethod.getInstance());
         tvDataSend.setText(dataSend);
 
-        Button btSend = (Button) view.findViewById(R.id.btn_send_text);
+        Button btSend = (Button)view.findViewById(R.id.btn_send_text);
         btSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
