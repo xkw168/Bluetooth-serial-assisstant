@@ -1,8 +1,20 @@
 # Bluetooth_serial_assistant
-## development environment
+
+&emsp;&emsp;该APP在传统的蓝牙串口助手的基础上，增加了画图功能。具备文字收发功能，同时在接收到的数据为纯数字的时候，支持画图功能。
+
+## 软件截图
+
+文字收发
+
+![文字](./img/text.png)
+
+数据画图（接收到的数据为纯数字）
+
+![文字](./img/plot.png)
+
+## 开发环境
+
 1. Android Studio
-2. **real device**(Attention: VM doesn't have blutooth)
+2. **真机**(注意：虚拟机无蓝牙)
 
-A functional bluetooth assistant which has common function of other bluetooth assistants and extra function like plot.
-
-tip: base on bluetooth 4.0 and above
+tip: 基于蓝牙4.0及以上
