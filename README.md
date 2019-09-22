@@ -12,11 +12,15 @@
 
 文字收发
 
-![文字](./img/text.png)
+<div  align="center">    
+<img src="./img/text.png" width = "320" height = "640" alt="文字收发"/>
+</div>
 
 数据画图（接收到的数据为纯数字）
 
-![文字](./img/plot.png)
+<div  align="center">    
+<img src="./img/plot.png" width = "320" height = "640" alt="数据绘图"/>
+</div>
 
 ## 开发环境
 
