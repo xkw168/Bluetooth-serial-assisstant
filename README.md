@@ -2,7 +2,7 @@
 
 [中文版](./README_ch.md)
 
-[English version]()(./README.md)
+[English version](./README.md)
 
 ## Download
 
