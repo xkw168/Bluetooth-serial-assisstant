@@ -1,30 +1,37 @@
 # Bluetooth_serial_assistant
 
-## 软件下载
+[中文版](./README_ch.md)
+
+[English version]()(./README.md)
+
+## Download
 
 [here](https://github.com/xkw168/Bluetooth_serial_assisstant/releases/tag/v1.0)
 
-## 软件介绍
+## Introduction
 
-&emsp;&emsp;该APP在传统的蓝牙串口助手的基础上，增加了画图功能。具备文字收发功能，同时在接收到的数据为纯数字的时候，支持画图功能。
+In addition to the function of a basic/traditional bluetooth serial assistant, this app add a **ploting** function.
 
-## 软件截图
+* basic function: search & add bluetooth device, send & receive text
+* ploting function: when the received data is purely number, the APP will plot the number it received in serial 
 
-文字收发
+## Screenshot
+
+send & receive **text**
 
 <div  align="center">    
 <img src="./img/text.png" width = "320" height = "640" alt="文字收发"/>
 </div>
 
-数据画图（接收到的数据为纯数字）
+send & receive **nember** and ploting
 
 <div  align="center">    
 <img src="./img/plot.png" width = "320" height = "640" alt="数据绘图"/>
 </div>
 
-## 开发环境
+## Development Environment
 
 1. Android Studio
-2. **真机**(注意：虚拟机无蓝牙)
+2. **Andriod SmartPhone**(Note: virtaul devices on your computer don't have bluetooth)
 
-tip: 基于蓝牙4.0及以上
+tip: the smart phone must support Bluetooth 4.0 or above
